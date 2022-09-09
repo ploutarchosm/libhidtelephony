@@ -25,7 +25,9 @@ import {
   OnOffControlType,
   getOnOffControlType,
 } from './hid';
+import {hidHeadset} from './hid_headset';
 import {Level, Logger} from './logger';
+import {getTelephonyCollection} from './telephony_collection';
 
 const TELEPHONY_DEVICE_FILTERS: HIDDeviceFilter = {
   usagePage: UsagePage.TELEPHONY,
@@ -195,19 +197,16 @@ export class TelephonyDeviceManager {
       throw new Error('Undefined device collection');
     }
 
-    const telephonyCollection = this.device.collections.find(
-        (collection) => collection.usagePage === UsagePage.TELEPHONY
-    );
-
-    if (telephonyCollection === undefined) {
-      this.logger.error('No telephony collection');
-      throw new Error('No telephony collection');
-    }
+    // get telephony
+    const telephonyCollection =
+     getTelephonyCollection(this.device, this.logger);
 
     if (telephonyCollection.inputReports) {
       this.parseInputReport(telephonyCollection.inputReports);
     }
     if (telephonyCollection.outputReports) {
+      // update output collection if existing are using isRange member of webhid
+      await hidHeadset(telephonyCollection.outputReports);
       this.parseOutputReport(telephonyCollection.outputReports);
     }
   }
