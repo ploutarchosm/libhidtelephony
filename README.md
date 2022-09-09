@@ -1,3 +1,11 @@
+### Patch Details
+Snom A330D A330M outputs are a set of range of 24 bits using usageMinimum & usageMaximum to defined the range. 
+
+This patch is set isRange member to false removes usageMinimum & usageMaximum and retrieve usages propery
+
+More details: 
+https://wicg.github.io/webhid/#dom-hidreportitem-isrange
+
 # LibHIDTelephony
 
 "This is not an officially supported Google product"
